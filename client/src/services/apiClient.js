@@ -61,7 +61,6 @@ const apiClient = axios.create({
    *   Permite enviar cookies (se for SPA stateful) ou headers de auth
    *   com segurança via cross-origin.
    */
-  withCredentials: true,
 });
 
 /*

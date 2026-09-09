@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 /*
@@ -40,6 +39,7 @@ use Illuminate\Support\Facades\Hash;
 | Exemplo: registrar usuário tem lógica (hash de senha, criar token, etc.)
 | → AuthService faz isso. Controller só orquestra.
 */
+
 class AuthService
 {
     /**
@@ -89,16 +89,12 @@ class AuthService
      */
     public function login(array $credentials): ?array
     {
-        /*
-         * Auth::attempt = pega email + senha, encontra usuário por email,
-         * verifica Hash::check(senha, hash_salvo). Se bater, retorna true.
-         * Internamente usa password_verify() do PHP.
-         */
-        if (! Auth::attempt($credentials)) {
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             return null;
         }
 
-        $user = Auth::user();
         $token = $user->createToken('api-token-' . $user->id)->plainTextToken;
 
         return [
@@ -113,8 +109,12 @@ class AuthService
      * Obs: com Sanctum, o token é o objeto "currentAccessToken" da request
      * autenticada. Deletar ele = não serve mais (invalidação server-side).
      */
+    /**
+     * 🚪 LOGOUT (deleta o token atual da tabela personal_access_tokens).
+     */
     public function logout(User $user): void
     {
-        $user->currentAccessToken()->delete();
+        // Remove o token que está autenticando a requisição atual de forma segura
+        $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
     }
 }

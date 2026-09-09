@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\SubtaskController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -83,6 +84,7 @@ use Illuminate\Support\Facades\Route;
 | ROTAS PÚBLICAS (autenticação — qualquer pessoa pode acessar)
 |--------------------------------------------------------------------------
 */
+
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login',    [AuthController::class, 'login'])->name('login');
 
@@ -113,7 +115,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
      * que são formulários HTML — na API só precisamos de 5).
      */
     Route::apiResource('categories', CategoryController::class)->only([
-        'index', 'store', 'show', 'update', 'destroy',
+        'index',
+        'store',
+        'show',
+        'update',
+        'destroy',
     ]);
 
     /*
@@ -121,8 +127,28 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
      * Como a rota toggle é Ação Singular (PATCH), colocamos dentro do grupo.
      */
     Route::apiResource('tasks', TaskController::class)->only([
-        'index', 'store', 'show', 'update', 'destroy',
+        'index',
+        'store',
+        'show',
+        'update',
+        'destroy',
     ]);
     Route::patch('/tasks/{task}/toggle', [TaskController::class, 'toggleComplete'])
         ->name('tasks.toggle');
+
+    /*
+     * 🏁 SUBTAREFAS (Subtasks) — Novas rotas integradas
+     * 
+     * • POST  /api/tasks/{task}/subtasks     → Cria uma subtarefa para uma task específica (Semântica REST)
+     * • PATCH /api/subtasks/{subtask}/toggle → Alterna o status da subtarefa usando a ID direta dela
+     * • DELETE /api/subtasks/{subtask}        → Deleta a subtarefa usando a ID direta dela
+     */
+    Route::post('/tasks/{task}/subtasks', [SubtaskController::class, 'store'])
+        ->name('subtasks.store');
+
+    Route::patch('/subtasks/{subtask}/toggle', [SubtaskController::class, 'toggleComplete'])
+        ->name('subtasks.toggle');
+
+    Route::delete('/subtasks/{subtask}', [SubtaskController::class, 'destroy'])
+        ->name('subtasks.destroy');
 });

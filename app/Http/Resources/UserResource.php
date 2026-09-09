@@ -31,6 +31,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 | O método toArray() define EXATAMENTE o que vai para o JSON.
 |##########################################################################
 */
+
 class UserResource extends JsonResource
 {
     /**
@@ -67,7 +68,10 @@ class UserResource extends JsonResource
              * O método whenLoaded() só inclui se o relacionamento foi
              * carregado (evita lazy loading acidental).
              */
-            'categories_count' => $this->whenCounted('categories'),
+            'categories_count' => $this->when(
+                isset($this->categories_count),
+                $this->categories_count
+            ),
         ];
     }
 }

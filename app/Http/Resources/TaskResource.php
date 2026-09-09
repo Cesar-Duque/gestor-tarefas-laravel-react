@@ -41,6 +41,8 @@ class TaskResource extends JsonResource
                 return $this->category ? new CategoryResource($this->category) : null;
             }),
 
+            'subtasks' => $this->subtasks,
+
             // Campo amigável para UI: "vence em 2 dias", "vencida", etc.
             // Criado como campo calculado (Accessor virtual não, mas sim aqui)
             'meta' => [
@@ -71,7 +73,7 @@ class TaskResource extends JsonResource
      */
     protected function getPrioridadeLabel(): string
     {
-        return match($this->prioridade) {
+        return match ($this->prioridade) {
             'baixa' => 'Baixa',
             'media' => 'Média',
             'alta'  => 'Alta',
@@ -84,7 +86,7 @@ class TaskResource extends JsonResource
      */
     protected function getStatusLabel(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'pendente'      => 'Pendente',
             'em_progresso'  => 'Em Progresso',
             'concluida'     => 'Concluída',

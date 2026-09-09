@@ -24,7 +24,10 @@ class CategoryResource extends JsonResource
              * com withCount('tasks'), automaticamente temos a coluna
              * tasks_count; se não, fica NULL (ou então com whenCounted).
              */
-            'tasks_count' => $this->whenCounted('tasks'),
+            'tasks_count' => $this->when(
+                isset($this->tasks_count),
+                $this->tasks_count
+            ),
 
             'created_at'  => $this->created_at->toIso8601String(),
             'updated_at'  => $this->updated_at->toIso8601String(),

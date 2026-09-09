@@ -27,34 +27,24 @@ class TaskController extends Controller
      * 📋 LISTAR tarefas (paginação + filtros + ordenação)
      * GET /api/tasks?page=1&status=pendente&prioridade=alta&category_id=1&sort=due_date&dir=asc
      */
-    public function index(Request $request): TaskCollection
+    // No seu TaskController.php, altere o método index para:
+
+    public function index(Request $request)
     {
-        /*
-         * Parseamos todos os query params possíveis para o service.
-         * Query params = tudo que vem após "?" na URL (ex: ?page=2&status=pendente)
-         * são acessados via $request->query('campo') ou $request->get('campo').
-         */
         $filters = [
             'status'      => $request->query('status'),
             'prioridade'  => $request->query('prioridade'),
-            'category_id' => $request->filled('category_id')
-                ? (int) $request->query('category_id')
-                : null,
+            'category_id' => $request->filled('category_id') ? (int) $request->query('category_id') : null,
             'sort'        => $request->query('sort', 'created_at'),
             'dir'         => $request->query('dir', 'desc'),
-            'per_page'    => $request->filled('per_page')
-                ? (int) $request->query('per_page')
-                : 10,
+            'per_page'    => $request->filled('per_page') ? (int) $request->query('per_page') : 10,
         ];
 
         $paginator = $this->taskService->findAllForUser($request->user()->id, $filters);
 
-        /*
-         * TaskCollection custom retorna data + meta de paginação + links.
-         * Status 200 OK (padrão para leitura).
-         */
-        return new TaskCollection($paginator);
+        return TaskResource::collection($paginator);
     }
+
 
     /**
      * ➕ CRIAR tarefa.

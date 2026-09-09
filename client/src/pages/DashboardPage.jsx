@@ -212,7 +212,7 @@ export default function DashboardPage() {
     return 'Boa noite';
   })();
 
-  const totalTasks = taskState.meta?.total ?? taskState.data.length;
+  const totalTasks = taskState.meta?.total ?? (Array.isArray(taskState.data) ? taskState.data.length : 0);
   const counts = countStatus(taskState.data);
 
   return (

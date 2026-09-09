@@ -45,7 +45,8 @@ class TaskService
          *   objeto LengthAwarePaginator com dados + meta (total, current_page...)
          */
         $query = Task::query()
-            ->with('category')      // EAGER LOAD (evita N+1 ao buscar categoria da tarefa)
+            ->with('category')
+            ->with('subtasks')     // EAGER LOAD (evita N+1 ao buscar categoria da tarefa)
             ->forCurrentUser()      // Scope: user_id = $userId (já usa auth()->id())
             ->status($filters['status'] ?? null)
             ->prioridade($filters['prioridade'] ?? null)
