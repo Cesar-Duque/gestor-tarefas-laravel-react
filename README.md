@@ -62,3 +62,24 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Rodar em outra máquina
+
+# 1) Clonar repositório
+git clone https://github.com/Cesar-Duque/gestor-tarefas-laravel-react.git
+cd gestor-tarefas-laravel-react
+
+# 2) Configurar backend Laravel
+composer install                # instala vendor
+cp .env.example .env            # cria .env (edite DB_DATABASE=laravel_tasks etc)
+php artisan key:generate        # gera APP_KEY
+php artisan migrate             # cria tabelas no MySQL
+
+# 3) Configurar frontend React
+cd client
+npm install                     # instala node_modules
+npm start                       # sobe em http://localhost:3000
+
+# 4) Rodar backend em outro terminal
+cd ..
+php artisan serve               # sobe em http://localhost:8000
